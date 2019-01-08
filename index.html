@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>DocMgr Query Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      media="screen"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    />
+    <script src="index.js"></script>
+  </head>
+  <body class="bg-light">
+    <div class="container">
+      <div class="py-5 text-center">
+        <img
+          class="d-block mx-auto mb-4"
+          src="https://seeklogo.com/images/E/esker-logo-BB25254082-seeklogo.com.png"
+          alt=""
+        />
+        <h2>Query Generator</h2>
+        <p class="lead">
+          Simply opens a new tab with a query URL using your current DocMgr
+          session.
+        </p>
+      </div>
+      <form>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="queryType">Query Type</label>
+          </div>
+          <select
+            class="custom-select"
+            id="queryType"
+            onchange="onSelectQueryType()"
+          >
+            <option selected>Choose...</option>
+            <option value="eddQuery">EDD Query</option>
+            <option value="sapQuery">SAP Query (RFC_READ_TABLE)</option>
+            <option value="sapBapi">SAP BAPI Query</option>
+          </select>
+        </div>
+
+        <div id="eddQueryFields">
+          <div class="form-group row">
+            <label for="eddQuery-tables" class="col-2 col-form-label"
+              >TABLES</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="SO - Customers__"
+                id="eddQuery-tables"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="eddQuery-attributes" class="col-2 col-form-label"
+              >ATTRIBUTES</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="NAME__|NUMBER__|CITY__|STREET__|REGION__|ZIP_CODE__"
+                id="eddQuery-attributes"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="eddQuery-filter" class="col-2 col-form-label"
+              >FILTER</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="(&(Number__=0000032023)(City__=GALWAY))"
+                id="eddQuery-filter"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="maxRecords" class="col-2 col-form-label"
+              >MAXRECORDS</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="100"
+                id="eddQuery-maxRecords"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div id="sapQueryFields">
+          <div class="form-group row">
+            <label for="sapQuery-sapConf" class="col-2 col-form-label"
+              >SAPCONF</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="CUSTOMER_ESKERDEMO"
+                id="sapQuery-sapConf"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="sapQuery-table" class="col-2 col-form-label"
+              >TABLE</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="KNA1"
+                id="sapQuery-table"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="sapQuery-fields" class="col-2 col-form-label"
+              >FIELDS</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="KUNNR|LAND1|MANDT|NAME1"
+                id="sapQuery-fields"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="sapQuery-options" class="col-2 col-form-label"
+              >OPTIONS</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="KUNNR = '0000000001' AND LAND1 = 'US'"
+                id="sapQuery-options"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="sapQuery-rowCount" class="col-2 col-form-label"
+              >ROWCOUNT</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="100"
+                id="sapQuery-rowCount"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div id="sapBapiFields">
+          <div class="form-group row">
+            <label for="sapBapi-sapConf" class="col-2 col-form-label"
+              >SAPCONF</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="CUSTOMER_ESKERDEMO"
+                id="sapBapi-sapConf"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="sapBapi-sapBapiName" class="col-2 col-form-label"
+              >SAPBAPINAME</label
+            >
+            <div class="col-10">
+              <input
+                class="form-control"
+                type="text"
+                value="RFC_READ_TEXT"
+                id="sapBapi-sapBapiName"
+              />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="sapBapi-sapBapiParams" class="col-2 col-form-label"
+              >SAPBAPIPARAMS</label
+            >
+            <div class="col-10">
+              <textarea
+                class="form-control"
+                id="sapBapi-sapBapiParams"
+                rows="7"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <button
+          id="submitButton"
+          type="button"
+          class="btn btn-primary btn-lg btn-block"
+          onclick="openQueryURL()"
+        >
+          Open Query in new tab
+        </button>
+      </form>
+    </div>
+  </body>
+</html>
