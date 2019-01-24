@@ -1,8 +1,11 @@
 /**
  * CONSTANTS
  */
-const ESKER_BASE_URL = "https://as1.ondemand.esker.com/ondemand/webaccess";
+const ESKER_BASE_DOMAIN = "ondemand.esker.com/ondemand/webaccess";
 
+/**
+ * This function is executed once the whole page is completely loaded.
+ */
 window.onload = function() {
   /**
    * Syntactic sugar to use the $ instead of the more verbose document.querySelector
@@ -20,6 +23,7 @@ function hideAllFieldsByDefault() {
   $("#sapQueryFields").style.display = "none";
   $("#sapBapiFields").style.display = "none";
   $("#submitButton").style.display = "none";
+  $("#farm").style.display = "none";
 }
 
 function setDefaultValueForSapBapiParams() {
@@ -63,7 +67,8 @@ function generateEDDQueryURL() {
   const attributes = $("#eddQuery-attributes").value;
   const filter = encodeURIComponent($("#eddQuery-filter").value);
   const maxRecords = $("#eddQuery-maxRecords").value;
-  return `${ESKER_BASE_URL}/EddQuery.ashx?debug=yes&TABLES=${tables}&ATTRIBUTES=${attributes}&FILTER=${filter}&MAXRECORDS=${maxRecords}`;
+  const farm = $("#farmField").value;
+  return `https://${farm}.${ESKER_BASE_DOMAIN}/EddQuery.ashx?debug=yes&TABLES=${tables}&ATTRIBUTES=${attributes}&FILTER=${filter}&MAXRECORDS=${maxRecords}`;
 }
 
 function generateSAPQueryURL() {
@@ -72,14 +77,16 @@ function generateSAPQueryURL() {
   const fields = $("#sapQuery-fields").value;
   const options = $("#sapQuery-options").value;
   const rowCount = $("#sapQuery-rowCount").value;
-  return `${ESKER_BASE_URL}/SAPQuery.ashx?debug=yes&SAPCONF=${sapConf}&TABLE=${table}&FIELDS=${fields}&OPTIONS=${options}&ROWCOUNT=${rowCount}`;
+  const farm = $("#farmField").value;
+  return `https://${farm}.${ESKER_BASE_DOMAIN}/SAPQuery.ashx?debug=yes&SAPCONF=${sapConf}&TABLE=${table}&FIELDS=${fields}&OPTIONS=${options}&ROWCOUNT=${rowCount}`;
 }
 
 function generateSAPBapiURL() {
   const sapConf = $("#sapBapi-sapConf").value;
   const sapBapiName = $("#sapBapi-sapBapiName").value;
   const sapBapiParams = $("#sapBapi-sapBapiParams").value;
-  return `${ESKER_BASE_URL}/SAPCallBapi.ashx?debug=yes&SAPCONF=${sapConf}&SAPBAPINAME=${sapBapiName}&SAPBAPIPARAMS=${sapBapiParams}`;
+  const farm = $("#farmField").value;
+  return `https://${farm}.${ESKER_BASE_DOMAIN}/SAPCallBapi.ashx?debug=yes&SAPCONF=${sapConf}&SAPBAPINAME=${sapBapiName}&SAPBAPIPARAMS=${sapBapiParams}`;
 }
 
 function onSelectQueryType() {
@@ -98,6 +105,10 @@ function onSelectQueryType() {
   );
   displayElemIfConditionFulfilled(
     "#submitButton",
+    queryTypeSelected !== "Choose..."
+  );
+  displayElemIfConditionFulfilled(
+    "#farm",
     queryTypeSelected !== "Choose..."
   );
 }
