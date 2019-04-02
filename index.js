@@ -1,9 +1,4 @@
 /**
- * CONSTANTS
- */
-const ESKER_BASE_DOMAIN = "ondemand.esker.com/ondemand/webaccess";
-
-/**
  * This function is executed once the whole page is completely loaded.
  */
 window.onload = function() {
@@ -68,7 +63,7 @@ function generateEDDQueryURL() {
   const filter = encodeURIComponent($("#eddQuery-filter").value);
   const maxRecords = $("#eddQuery-maxRecords").value;
   const farm = $("#farmField").value;
-  return `https://${farm}.${ESKER_BASE_DOMAIN}/EddQuery.ashx?debug=yes&TABLES=${tables}&ATTRIBUTES=${attributes}&FILTER=${filter}&MAXRECORDS=${maxRecords}`;
+  return `${getBaseUrl(farm)}/EddQuery.ashx?debug=yes&TABLES=${tables}&ATTRIBUTES=${attributes}&FILTER=${filter}&MAXRECORDS=${maxRecords}`;
 }
 
 function generateSAPQueryURL() {
@@ -78,7 +73,7 @@ function generateSAPQueryURL() {
   const options = $("#sapQuery-options").value;
   const rowCount = $("#sapQuery-rowCount").value;
   const farm = $("#farmField").value;
-  return `https://${farm}.${ESKER_BASE_DOMAIN}/SAPQuery.ashx?debug=yes&SAPCONF=${sapConf}&TABLE=${table}&FIELDS=${fields}&OPTIONS=${options}&ROWCOUNT=${rowCount}`;
+  return `${getBaseUrl(farm)}/SAPQuery.ashx?debug=yes&SAPCONF=${sapConf}&TABLE=${table}&FIELDS=${fields}&OPTIONS=${options}&ROWCOUNT=${rowCount}`;
 }
 
 function generateSAPBapiURL() {
@@ -86,7 +81,16 @@ function generateSAPBapiURL() {
   const sapBapiName = $("#sapBapi-sapBapiName").value;
   const sapBapiParams = $("#sapBapi-sapBapiParams").value;
   const farm = $("#farmField").value;
-  return `https://${farm}.${ESKER_BASE_DOMAIN}/SAPCallBapi.ashx?debug=yes&SAPCONF=${sapConf}&SAPBAPINAME=${sapBapiName}&SAPBAPIPARAMS=${sapBapiParams}`;
+  return `${getBaseUrl(farm)}/SAPCallBapi.ashx?debug=yes&SAPCONF=${sapConf}&SAPBAPINAME=${sapBapiName}&SAPBAPIPARAMS=${sapBapiParams}`;
+}
+
+/**
+ * na2 is the only farm where the URL isn't prefixed by ondemand
+ * So we have for instance: as1.ondemand.esker.com, but only na2.esker.com
+ */
+function getBaseUrl(farm) {
+  const addOnDemand = (farm.toLowerCase() !== "na2");
+  return `https://${farm}${addOnDemand ? ".ondemand" : ""}.esker.com/ondemand/webaccess`;
 }
 
 function onSelectQueryType() {
